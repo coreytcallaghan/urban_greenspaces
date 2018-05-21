@@ -1,10 +1,12 @@
-# A repository to begin building a website which allows council managers to fully use biodiversity metrics from a specific urban greenspace
+# Measuring biodiversity metrics in urban greenspaces using existing citizen science data
+
+### A repository to begin building a website which allows council managers to fully use biodiversity metrics from a specific urban greenspace
 
 Overall workflow:
 
+![Workflow](https://github.com/coreytcallaghan/urban_greenspaces/blob/master/urban_greenspace_workflow.jpg)
 
-
-Will eventually split this repository into multiple repos once the project is further fleshed out.
+This repository is mainly going to be used to get a proof-of-concept up-and-running. It will eventually be split out into better and more distinct repos for project management.
 
 The main steps include:
 
