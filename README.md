@@ -1,8 +1,9 @@
 # Measuring biodiversity metrics in urban greenspaces using existing citizen science data
 
-### A repository to begin building a website which allows council managers to fully use biodiversity metrics from a specific urban greenspace
+A repository to begin building a website which allows council managers to fully use biodiversity metrics from a specific urban greenspace. The theory behind the tool is largely developed, and can be read [here](http://www.ace-eco.org/vol12/iss2/art12/) and [here](http://www.publish.csiro.au/wr/Fulltext/WR17141).
 
-Overall workflow:
+
+### Overall workflow:
 
 ![Workflow](https://github.com/coreytcallaghan/urban_greenspaces/blob/master/urban_greenspace_workflow.jpg)
 
