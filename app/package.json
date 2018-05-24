@@ -3,17 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build",
+    "serve": "vue-cli-service serve --open",
+    "deploy": "gh-pages -d dist",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "axios-cache-adapter": "^2.0.0",
     "bulma": "^0.7.1",
+    "gh-pages": "^1.1.0",
+    "localforage": "^1.7.1",
     "pug": "^2.0.3",
     "pug-plain-loader": "^1.0.0",
     "vue": "^2.5.16",
     "vue-router": "^3.0.1",
+    "vue-underscore": "^0.1.4",
     "vue2-leaflet": "^1.0.2"
   },
   "devDependencies": {
