@@ -6,15 +6,16 @@ div
     :zoom=13,
     :center="center")
     l-tile-layer(:url="url", :attribution="attribution")
-    l-geo-json(:geojson='g' key="i" v-for="(g, i) in greenspaces")
+    l-geo-json(:geojson='g' :key="i" v-for="(g, i) in greenspaces")
 </template>
 
 <script>
 import { LMap, LTileLayer, LGeoJson } from 'vue2-leaflet'
-import greenspaces from '../../../geojson_greenspace_files'
 import axios from 'axios'
+import greenspaces from '../../../geojson_greenspace_files'
+
 var urlBuilder = file => {
-  return `https://raw.githubusercontent.com/coreytcallaghan/urban_greenspaces/master/geojson%20greenspace%20files/${file}`
+  return `https://raw.githubusercontent.com/coreytcallaghan/urban_greenspaces/master/geojson%20greenspace%20files/${file}.geojson`
 }
 export default {
   components: { LMap, LTileLayer, LGeoJson },
@@ -28,11 +29,17 @@ export default {
   },//
   // 'https://raw.githubusercontent.com/coreytcallaghan/urban_greenspaces/master/geojson%20greenspace%20files/aus-nsw-baker_park.geojson'
   mounted () {
-    axios.get(urlBuilder('aus-nsw-randwick_barracks.geojson'))
-      .then(resp => {
-        this.greenspaces.push(resp.data)
-      })
-      .catch(err => console.log(err))
+    var nsw = greenspaces.filter(x => x.match(/aus-nsw/))
+    nsw.forEach((f, i) => {
+      setTimeout(() => {
+        axios.get(urlBuilder(f))
+          .then(resp => {
+            this.greenspaces.push(resp.data)
+          })
+          .catch(err => console.log(err))
+      }, i * 50);
+    }
+    )
   }
 }
 </script>
