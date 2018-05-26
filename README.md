@@ -1,9 +1,17 @@
 # Measuring biodiversity metrics in urban greenspaces using existing citizen science data
 
-# [Demo site](https://coreytcallaghan.github.io/urban_greenspaces/)
+#### [Demo site](https://coreytcallaghan.github.io/urban_greenspaces/)
 
 A repository to begin building a website which allows council managers to fully use biodiversity metrics from a specific urban greenspace. The theory behind the tool is largely developed, and can be read [here](http://www.ace-eco.org/vol12/iss2/art12/) and [here](http://www.publish.csiro.au/wr/Fulltext/WR17141).
 
+### Adding Greenspaces
+To add a greenspace use a tool like [geojson.io](http://geojson.io/) to extract a `.geojson` file of your greenspace.
+
+We use the naming convention `<three letter country code>-<state or province>-<name_of_park>.geojson`, for example Hyde Park in New South Wales Australia has the file name `aus-nsw-hyde_park.geojson`. All spaces must be replaced by underscores: `_` and the filename must be in all lowercase. 
+
+Then make a `github.com` account and fork the greenspace repository, add your `.geojson` file to the folder `/geojson_greenspace_files`, commit your changes and then submit a pull request. You can submit mulitple greenspaces at a time.
+
+:leaves: :bird:
 
 ### Overall workflow:
 

@@ -3,7 +3,7 @@ div
   l-map.my-map(
     style="height: 600px;"
     ref="map",
-    :zoom=13,
+    :zoom="zoom",
     :center="center")
     l-tile-layer(:url="url", :attribution="attribution")
     l-geo-json(:geojson='g' :key="i" v-for="(g, i) in geojsons")
@@ -48,8 +48,6 @@ div
               a.button(:class="{'is-info':g.displayed}" @click='toggleVis(g.index)')
                 div(v-if='g.displayed') Remove from map
                 div(v-else) Add to map
-              
-
 
 </template>
 
@@ -65,6 +63,7 @@ export default {
   data () {
     return {
       center: [-33.95, 151.2],
+      zoom: 13,
       url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       greenspaces: [],
@@ -136,8 +135,6 @@ export default {
         g.index = index
         this.greenspaces.push(g)
       })
-      this.toggleVis(0)
-
       this.calcStats()
     })
     this.results = this.greenspaces

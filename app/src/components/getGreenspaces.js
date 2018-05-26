@@ -13,7 +13,7 @@ const store = localforage.createInstance({
 
 const api = setup({
   cache: {
-    maxAge: 15 * 60 * 1000,
+    maxAge: 30 * 60 * 1000,
     store
   }
 })
@@ -37,3 +37,8 @@ export const greenspaces = () =>
 
 export const getGeoJson = url =>
   api.get(url).then(resp => resp.data)
+
+export const getREADME = () =>
+  api.get('https://api.github.com/repos/coreytcallaghan/urban_greenspaces/readme', {
+    headers: { Accept: 'application/vnd.github.VERSION.html' }
+  })
