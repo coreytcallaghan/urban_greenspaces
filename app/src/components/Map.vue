@@ -8,39 +8,48 @@ div
     l-tile-layer(:url="url", :attribution="attribution")
     l-geo-json(:geojson='g' :key="i" v-for="(g, i) in geojsons")
   
-    
-  section.hero
-    .hero-body
-      nav.level(v-if='statistics')
-        .level-item.has-text-centered
-          div
-            p.heading Greenspaces
-            p.title {{statistics.count}}
-        .level-item.has-text-centered
-          div
-            p.heading Countries
-            p.title {{statistics.numCountries}}
-      .container
-        table.table.is-fullwidth.centered
-          thead
-            tr
-              th Country
-              th State/Province
-              th Name
-              th Displayed
-              th GeoJson Download Link
-              th
-          tbody
-            tr(v-for='(g, i) in greenspaces' :key='g.id')
-              td {{g.country}}
-              td {{g.state}}
-              td {{g.name}}
-              td {{g.displayed}}
-              td 
-                a(:href="g.download" target="_blank") Download Link
-              td 
-                a.button(@click='toggleVis(g.id)') Add to map
+  section.section.container
+    nav.level(v-if='statistics')
+      .level-item.has-text-centered
+        div
+          p.heading Greenspaces
+          p.title {{statistics.count}}
+      .level-item.has-text-centered
+        div(v-if='search')
+          p.heading Matches
+          p.title {{results.length}}
+      .level-item.has-text-centered
+        div
+          p.heading Countries
+          p.title {{statistics.numCountries}}
+    .field
+      .control.has-icons-left
+        input.input.is-rounded.is-large(placeholder='Search Greenspaces',
+            v-model='search')
+        span.icon.is-left
+          i.fas.fa-search
+    .container
+      table.table.is-fullwidth.has-text-centered
+        thead
+          tr
+            th Country
+            th State/Province
+            th Name
+            th GeoJson Download Link
+            th
+        tbody
+          tr(v-for='(g, i) in this.results' ,:key='g.id')
+            td {{g.country}}
+            td {{g.state}}
+            td {{g.name}}
+            td 
+              a(:href="g.download" target="_blank") Download Link
+            td 
+              a.button(:class="{'is-info':g.displayed}" @click='toggleVis(g.index)')
+                div(v-if='g.displayed') Remove from map
+                div(v-else) Add to map
               
+
 
 </template>
 
@@ -49,7 +58,7 @@ import Vue from 'vue'
 import { LMap, LTileLayer, LGeoJson } from 'vue2-leaflet'
 import axios from 'axios'
 import { _ } from 'vue-underscore'
-
+import center from '@turf/center'
 import { greenspaces, getGeoJson } from './getGreenspaces'
 export default {
   components: { LMap, LTileLayer, LGeoJson },
@@ -58,9 +67,11 @@ export default {
       center: [-33.95, 151.2],
       url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      greenspaces: {},
+      greenspaces: [],
+      results: [],
       statistics: {},
-      geojsons: []
+      geojsons: [],
+      search: ''
     }
   },
   methods: {
@@ -74,39 +85,62 @@ export default {
     },
     calcStats () {
       this.statistics = {
-        count: _.keys(this.greenspaces).length,
-        numCountries: _.uniq(_.map(this.greenspaces, x => x.country)).length
+        count: this.greenspaces.length,
+        numCountries: _.uniq(this.greenspaces.map(x => x.country)).length
       }
     },
-    toggleVis (id, reload = true) {
-      var greenspace = this.greenspaces[id]
+    toggleVis (index, reload = true) {
+      var greenspace = this.greenspaces[index]
       if (!greenspace.displayed && !greenspace.geojson) {
         getGeoJson(greenspace.download).then(data => {
           greenspace.geojson = data
           greenspace.displayed = !greenspace.displayed
+          var c = center(data).geometry.coordinates
+          // leaflet center wants lat lng geojson is lng lat
+          greenspace.center = [c[1], c[0]]
+          if (greenspace.displayed && reload) this.center = greenspace.center
           if (reload) this.refreshGeojsons()
         })
       } else {
-        if (reload) this.refreshGeojsons()
+        if (greenspace.displayed && reload) this.center = greenspace.center
         greenspace.displayed = !greenspace.displayed
+        if (reload) this.refreshGeojsons()
       }
     }
+  },
+  watch: {
+    search: _.debounce(function () {
+      var keys = []
+      var search = this.search.trim()
+      var match = search.match(/(.+):/)
+      if (match) {
+        keys = [match[1]]
+        search = search.replace(/.+:/, '').trim()
+      } else {
+        keys = ['state', 'name', 'country']
+      }
+      this.$search(search, this.greenspaces, {
+        keys: keys,
+        defaultAll: true
+      }).then(results => {
+        this.results = results.length == 0 ? this.greenspaces : results
+      })
+    }, 400)
   },
   mounted () {
     // get the greenspaces
     greenspaces().then(resp => {
-      var nsw = resp.filter(x => x.state.match(/NSW/))
-      resp.forEach(g => {
+      resp.forEach((g, index) => {
         g.displayed = false
         g.geojson = null
-        this.greenspaces[g.id] = g
+        g.index = index
+        this.greenspaces.push(g)
       })
-      nsw.forEach((g, i) => {
-        this.toggleVis(g.id, i == nsw.length - 1)
-      })
+      this.toggleVis(0)
+
       this.calcStats()
     })
-    //var nsw = greenspaces.filter(x => x.match(/aus-nsw/))
+    this.results = this.greenspaces
   }
 }
 </script>

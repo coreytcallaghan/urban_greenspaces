@@ -9,6 +9,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@turf/center": "^6.0.1",
     "axios": "^0.18.0",
     "axios-cache-adapter": "^2.0.0",
     "bulma": "^0.7.1",
@@ -17,6 +18,7 @@
     "pug": "^2.0.3",
     "pug-plain-loader": "^1.0.0",
     "vue": "^2.5.16",
+    "vue-fuse": "^1.5.2",
     "vue-router": "^3.0.1",
     "vue-underscore": "^0.1.4",
     "vue2-leaflet": "^1.0.2"

@@ -17,6 +17,8 @@ section.hero.is-success
         .navbar-menu
           .navbar-end
             router-link.navbar-item.is-size-4(to='/about') About
+            a.navbar-item.is-size-4(href='https://github.com/coreytcallaghan/urban_greenspaces/')
+              span.fab.fa-github
 </template>
 
 <script>
