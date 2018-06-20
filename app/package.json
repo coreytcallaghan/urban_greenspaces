@@ -6,7 +6,8 @@
     "build": "vue-cli-service build",
     "serve": "vue-cli-service serve --open",
     "deploy": "gh-pages -d dist",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "bnd": "npm run build && npm run deploy"
   },
   "dependencies": {
     "@turf/center": "^6.0.1",
