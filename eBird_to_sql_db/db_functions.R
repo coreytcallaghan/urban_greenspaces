@@ -15,9 +15,9 @@ library(magrittr)
 options(readr.show_progress = FALSE)
 
 con <- dbConnect(RMariaDB::MariaDB(), user="ebird", password="magpie2311", host="WEDGETAIL", dbname="ebird")
-main <- function (pre_process_size = 1000, chunk_size = 1e5) {
-  path = "C:/Users/CTC/Desktop/urban_greenspaces/Raw_eBird_data/ebd_AU_relFeb-2018/ebd_AU_relFeb-2018.txt"
-  # path = "Raw_eBird_data/ebird_1e4_text.txt"
+main <- function (chunk_size = 1e3) {
+  #path = "C:/Users/CTC/Desktop/urban_greenspaces/Raw_eBird_data/ebd_AU_relFeb-2018/ebd_AU_relFeb-2018.txt"
+  path = "Raw_eBird_data/ebird_1e4_text.txt"
   col_types_list = cols(
       .default = col_character(),
     `LAST EDITED DATE` = col_datetime(format = ""),
@@ -46,9 +46,6 @@ main <- function (pre_process_size = 1000, chunk_size = 1e5) {
   doWrite <- function (what, df) {
     # make column names neater
     colnames(df) <- gsub(" |/", "_", colnames(df))
-    spatial_table <- df %>%
-      select(SAMPLING_EVENT_IDENTIFIER, LATITUDE, LONGITUDE) %>%
-      distinct(., .keep_all=TRUE)
     if(what == 'append') {
         append <- T
         overwrite <- F
@@ -58,12 +55,10 @@ main <- function (pre_process_size = 1000, chunk_size = 1e5) {
     } else {
       stop(paste('what', what, 'not properly specified, should be one of "create" or "append"'))
     }
-    sp_q <- dbWriteTable(con, "spatial_table",  as.data.frame(spatial_table), 
-      overwrite = overwrite, append = append)
     ebird_all <- dbWriteTable(con, 'ebird_all_data', as.data.frame(df), 
       overwrite = overwrite,  append = append)
-    if(!sp_q | !ebird_all) {
-      print(paste('writes failed spatial:', sp_q, 'ebird_all', ebird_all))
+    if(!ebird_all) {
+      print(paste('writes failed ebird_all', ebird_all))
     }
     #print(nrow(dbReadTable(con, 'spatial_table')))
   }
@@ -73,20 +68,18 @@ main <- function (pre_process_size = 1000, chunk_size = 1e5) {
   process_data_raw <- function(df, pos) {
       # make column names neater
       print(paste('processing', pos, paste(dim(df), collapse = ',')))
-      doWrite('append', df)
+      doWrite(ifelse(pos == 1, 'create', 'append'), df)
   }
   process_data_callback <- SideEffectChunkCallback$new(process_data_raw)
-
-  df <- read_delim(path, delim="\t", quote="", col_names=TRUE, trim_ws=TRUE,
-    col_types = col_types_list, n_max = pre_process_size)
-  doWrite('create', df)
   print("db's created")
   # start the sequential read
   read_delim_chunked(path, process_data_callback, 
             delim="\t", quote="", trim_ws=TRUE,
-            skip = pre_process_size+1, col_names = colnames(df),
+            col_names = TRUE,
             col_types = col_types_list, chunk_size = chunk_size)
 }
 main()
+print(dbGetQuery(con, "SELECT COUNT(*) FROM ebird_all_data"))
 #print(warnings())
 dbDisconnect(con)
+
