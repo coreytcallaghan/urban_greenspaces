@@ -113,9 +113,24 @@ checklists_from_file <- function (con, gs_file) {
     cbind(meta, lists)
   } 
 }
+observations_from_file_to_rds <- function (con, gs_file) {
+  geojson_data <- geojsonR::FROM_GeoJson(gs_file)
+  wkt <- get_wkt_of_greenspace(geojson_data)
+  lists <- dbGetQuery(con, paste0(
+    "SELECT * from ebird_all_data",
+    "WHERE SAMPLING_EVENT_IDENTIFIER FROM spatial_table WHERE MBRContains( GeomFromText(\'", wkt, "\'), pt);"))
+  lists <- as.data.frame(lists)
+  meta <- parse_gs_file(gs_file)
+  if(nrow(lists) == 0)
+   lists
+  else {
+    cat(paste(meta$name, nrow(lists), 'lists \n'))
+    cbind(meta, lists)
+  } 
+}
 
-all_greenspace_checklists  <- function (greenspace_file = 'geojson_greenspace_files/'){
-  greenspaces <- paste0(greenspace_file, dir(greenspace_file))
+all_greenspace_checklists  <- function (greenspace_folder = 'geojson_greenspace_folders/'){
+  greenspaces <- paste0(greenspace_folder, dir(greenspace_folder))
   con <- get_con()
   lists <- plyr::ldply(greenspaces, function (gs) checklists_from_file(con, gs))
   dbDisconnect(con)
@@ -136,4 +151,4 @@ open_leaflet <- function (checklists) {
 
 #
 #saveRDS(all_greenspace_checklists(), 'greenspace_checklists.RDS')
-all_greenspace_checklists()  %>% open_leaflet
+# all_greenspace_checklists()  %>% open_leaflet  %>% print

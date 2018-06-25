@@ -3,8 +3,10 @@ required_packages <- function () {
     'RMariaDB',
     'readr',
     'dplyr',
+    'plyr',
+    'leaflet',
     'magrittr',
     'geojsonR',
-    'wellknown',
+    'wellknown'
   )
 }
