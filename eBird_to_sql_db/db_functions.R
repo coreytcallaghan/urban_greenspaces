@@ -1,12 +1,5 @@
-## An R script to convert a flat text file that is almost 5 GB
+## An R script to convert a flat text file 
 ## into a MySQL database hosted on a remote MySQL server
-## This is for Australia only, but will eventually want to
-## convert the entire eBird dataset into a MySQL database
-## Started work on a function to read the text file in
-## in chunks and append those chunks to a MySQL database
-## Need to work on this more though, and for now moving forward with
-## the simple version below
-
 
 library(RMariaDB)
 library(readr)
@@ -15,9 +8,8 @@ library(magrittr)
 options(readr.show_progress = FALSE)
 
 con <- dbConnect(RMariaDB::MariaDB(), user="ebird", password="magpie2311", host="WEDGETAIL", dbname="ebird")
-main <- function (chunk_size = 1e3) {
-  #path = "C:/Users/CTC/Desktop/urban_greenspaces/Raw_eBird_data/ebd_AU_relFeb-2018/ebd_AU_relFeb-2018.txt"
-  path = "Raw_eBird_data/ebird_1e4_text.txt"
+main <- function (chunk_size = 1e5) {
+  path = "C:/Users/CTC/Desktop/urban_greenspaces/Raw_eBird_data/ebd_AU_relFeb-2018/ebd_AU_relFeb-2018.txt"
   col_types_list = cols(
       .default = col_character(),
     `LAST EDITED DATE` = col_datetime(format = ""),
@@ -55,12 +47,11 @@ main <- function (chunk_size = 1e3) {
     } else {
       stop(paste('what', what, 'not properly specified, should be one of "create" or "append"'))
     }
-    ebird_all <- dbWriteTable(con, 'ebird_all_data', as.data.frame(df), 
+    ebird_aus <- dbWriteTable(con, 'ebird_aus_data', as.data.frame(df), 
       overwrite = overwrite,  append = append)
-    if(!ebird_all) {
-      print(paste('writes failed ebird_all', ebird_all))
+    if(!ebird_aus) {
+      print(paste('writes failed ebird_aus', ebird_aus))
     }
-    #print(nrow(dbReadTable(con, 'spatial_table')))
   }
 
 
@@ -79,7 +70,7 @@ main <- function (chunk_size = 1e3) {
             col_types = col_types_list, chunk_size = chunk_size)
 }
 main()
-print(dbGetQuery(con, "SELECT COUNT(*) FROM ebird_all_data"))
+print(dbGetQuery(con, "SELECT COUNT(*) FROM ebird_aus_data"))
 #print(warnings())
 dbDisconnect(con)
 
