@@ -6,18 +6,12 @@ library(readr)
 library(dplyr, quietly = TRUE, warn.conflicts = FALSE)
 library(magrittr)
 options(readr.show_progress = FALSE)
-<<<<<<< HEAD
 
-con <- dbConnect(RMariaDB::MariaDB(), user="ebird", password="magpie2311", host="WEDGETAIL", dbname="ebird")
-main <- function (chunk_size = 1e5) {
-  path = "C:/Users/CTC/Desktop/urban_greenspaces/Raw_eBird_data/ebd_AU_relFeb-2018/ebd_AU_relFeb-2018.txt"
-=======
 get_con <- function () dbConnect(RMariaDB::MariaDB(), user="ebird", password="magpie2311", host="WEDGETAIL", dbname="ebird")
-import_data <- function (chunk_size = 1e3) {
+import_data <- function (chunk_size = 1e4) {
   con <- get_con()
-  #path = "C:/Users/CTC/Desktop/urban_greenspaces/Raw_eBird_data/ebd_AU_relFeb-2018/ebd_AU_relFeb-2018.txt"
-  path = "Raw_eBird_data/ebird_1e4_text.txt"
->>>>>>> e520b66cc8e5302ee8188d8e783ce48b5554ce8e
+  path = "D:/All eBird data/ebd_AU_relFeb-2018.txt"
+
   col_types_list = cols(
       .default = col_character(),
     `LAST EDITED DATE` = col_datetime(format = ""),
@@ -55,10 +49,10 @@ import_data <- function (chunk_size = 1e3) {
     } else {
       stop(paste('what', what, 'not properly specified, should be one of "create" or "append"'))
     }
-    ebird_aus <- dbWriteTable(con, 'ebird_aus_data', as.data.frame(df), 
+    ebird_all <- dbWriteTable(con, 'ebird_all_data', as.data.frame(df), 
       overwrite = overwrite,  append = append)
-    if(!ebird_aus) {
-      print(paste('writes failed ebird_aus', ebird_aus))
+    if(!ebird_all) {
+      print(paste('writes failed ebird_all', ebird_all))
     }
   }
 
@@ -78,15 +72,9 @@ import_data <- function (chunk_size = 1e3) {
             col_types = col_types_list, chunk_size = chunk_size)
   dbDisconnect(con)
 }
-<<<<<<< HEAD
-main()
-print(dbGetQuery(con, "SELECT COUNT(*) FROM ebird_aus_data"))
-=======
 
-#print(dbGetQuery(con, "show tables"))
->>>>>>> e520b66cc8e5302ee8188d8e783ce48b5554ce8e
 #print(warnings())
-
+import_data()
 #gs_file <- 'geojson_greenspace_files/aus-nsw-randwick_environment_park.geojson'
 #checklists_from_file(get_con(), gs_file)
 get_wkt_of_greenspace <- function (geojson_data){ 
@@ -154,5 +142,5 @@ open_leaflet <- function (checklists) {
 
 
 #
-#saveRDS(all_greenspace_checklists(), 'greenspace_checklists.RDS')
+# saveRDS(all_greenspace_checklists(), 'greenspace_checklists.RDS')
 # all_greenspace_checklists()  %>% open_leaflet  %>% print
