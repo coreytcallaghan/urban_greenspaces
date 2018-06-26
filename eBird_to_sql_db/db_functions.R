@@ -1,14 +1,14 @@
 ## An R script to convert a flat text file 
 ## into a MySQL database hosted on a remote MySQL server
 
-library(RMariaDB)
-library(readr)
-library(dplyr, quietly = TRUE, warn.conflicts = FALSE)
-library(magrittr)
 options(readr.show_progress = FALSE)
 
 get_con <- function () dbConnect(RMariaDB::MariaDB(), user="ebird", password="magpie2311", host="WEDGETAIL", dbname="ebird")
-import_data <- function (chunk_size = 1e4) {
+import_data <- function (path = '', chunk_size = 1e4) {
+  library(RMariaDB)
+  library(readr)
+  library(dplyr, quietly = TRUE, warn.conflicts = FALSE)
+  library(magrittr)
   con <- get_con()
   path = "D:/All eBird data/ebd_AU_relFeb-2018.txt"
 
@@ -73,10 +73,6 @@ import_data <- function (chunk_size = 1e4) {
   dbDisconnect(con)
 }
 
-#print(warnings())
-import_data()
-#gs_file <- 'geojson_greenspace_files/aus-nsw-randwick_environment_park.geojson'
-#checklists_from_file(get_con(), gs_file)
 get_wkt_of_greenspace <- function (geojson_data){ 
   polys <- lapply(geojson_data$features, function(feature) {
     list(feature$geometry$coordinates)
