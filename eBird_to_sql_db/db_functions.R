@@ -35,7 +35,7 @@ import_data <- function (path = 'D:/All eBird data/ebd_AU_relFeb-2018.txt', chun
     LOCALITY = col_skip(),
     X49 = col_skip()
   )
-db_
+
   doWrite <- function (what, df) {
     # make column names neater
     colnames(df) <- gsub(" |/", "_", colnames(df))
