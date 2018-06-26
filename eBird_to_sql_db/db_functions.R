@@ -4,13 +4,12 @@
 options(readr.show_progress = FALSE)
 
 get_con <- function () dbConnect(RMariaDB::MariaDB(), user="ebird", password="magpie2311", host="WEDGETAIL", dbname="ebird")
-import_data <- function (path = '', chunk_size = 1e4) {
+import_data <- function (path = 'D:/All eBird data/ebd_AU_relFeb-2018.txt', chunk_size = 1e4) {
   library(RMariaDB)
   library(readr)
   library(dplyr, quietly = TRUE, warn.conflicts = FALSE)
   library(magrittr)
   con <- get_con()
-  path = "D:/All eBird data/ebd_AU_relFeb-2018.txt"
 
   col_types_list = cols(
       .default = col_character(),
@@ -36,7 +35,7 @@ import_data <- function (path = '', chunk_size = 1e4) {
     LOCALITY = col_skip(),
     X49 = col_skip()
   )
-
+db_
   doWrite <- function (what, df) {
     # make column names neater
     colnames(df) <- gsub(" |/", "_", colnames(df))
