@@ -43,11 +43,13 @@ def main():
     f.write(out)
     f.close()
 
+  files.append(os.path.join(args.dir, 'add_spatial_index.sql'))
   f = open(os.path.join(args.dir, 'init.sql' ), 'w+')
+
   f.write('\n'.join(['source %s' %f for f in files]))
   f.close()
 def get_sql(path, cols, table):
-    return """LOAD DATA INFILE '%s' 
+    return """LOAD DATA CONCURRENT INFILE '%s' 
   IGNORE INTO TABLE %s 
   IGNORE 1 LINES
     (

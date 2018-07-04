@@ -1,4 +1,4 @@
-LOAD DATA INFILE '/corey/ebd_relFeb-2018.txt' 
+LOAD DATA CONCURRENT INFILE '/corey/ebd_relFeb-2018.txt' 
   IGNORE INTO TABLE checklists 
   IGNORE 1 LINES
     (
