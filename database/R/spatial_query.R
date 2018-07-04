@@ -61,12 +61,13 @@ samples_from_file <- function (con, gs_file) {
   lists <- dbGetQuery(con, query_)
   lists <- as.data.frame(lists)
   meta <- parse_gs_file(gs_file)
-  if(nrow(lists) == 0)
-   lists
-  else {
+  if(nrow(lists) == 0) {
+    cat(paste(meta$file_country, meta$gs_id, 0, 'observations \n'))
+    lists
+  } else {
     cat(paste(meta$file_country, meta$gs_id, nrow(lists), 'observations \n'))
     cbind(meta, lists)
-  } 
+  }
 }
 
 write_all_samples  <- function (greenspace_folder = 'geojson_greenspace_files/'){
@@ -78,8 +79,14 @@ write_new_samples <- function (
     rds_folder = 'rds_greenspace_files/') {
     geojsons <- dir(greenspace_folder) %>% gsub('.geojson$', '', .)
     rdss <- dir(rds_folder) %>% gsub('.RDS$', '', .)
-    greenspaces <- paste0(setdiff(geojsons, rdss), '.geojson')
-    write_samples(greenspaces)
+    
+    greenspaces <- setdiff(geojsons, rdss)
+    if (length(greenspaces) > 0) {
+      greenspaces <- paste0(greenspaces, '.geojson')
+      write_samples(greenspaces)
+    } else {
+      print('no new greenspaces')
+    }
 }
 write_samples <- function (files, greenspace_folder = 'geojson_greenspace_files/', out_folder = 'rds_greenspace_files/') {
   require(purrr)
@@ -88,7 +95,7 @@ write_samples <- function (files, greenspace_folder = 'geojson_greenspace_files/
   files %>% walk(function(gs){
     infile <- paste0(greenspace_folder, gs)
     outfile <- paste0(out_folder, gsub('.geojson$','', gs) ,'.RDS')
-    print(paste(gs, infile, outfile))
+    #print(paste(gs, infile, outfile))
     saveRDS(samples_from_file(con, infile), outfile)
   })
   dbDisconnect(con)
