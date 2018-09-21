@@ -1,0 +1,7 @@
+
+# not yet complete
+FROM geodata/gdal
+
+RUN apt-get install my-sql-client
+
+

@@ -11,5 +11,4 @@ CREATE SPATIAL INDEX ix_sites_pt ON sites(pt);
 
 CREATE INDEX ix_SAMPLING_EVENT_IDENTIFIER on samples(SAMPLING_EVENT_IDENTIFIER);
 CREATE INDEX ix_LOCALITY_ID on checklists (LOCALITY_ID);
-# might not be able to create an index on primary key
-# CREATE INDEX ix_TAXONOMIC_ORDER on species (TAXONOMIC_ORDER);
+

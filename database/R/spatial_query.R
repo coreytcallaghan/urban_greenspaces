@@ -26,20 +26,6 @@ parse_gs_file <- function (filename) {
   data.frame(filename = filename, file_country = x[1], file_state = x[2], file_gs_name = x[3], gs_id = gs_id)
 }
 
-checklists_from_file <- function (con, gs_file) {
-  stop("function not yet useable")
-  geojson_data <- geojsonR::FROM_GeoJson(gs_file)
-  wkt <- get_wkt_of_greenspace(geojson_data)
-  lists <- dbGetQuery(con, paste0("SELECT SAMPLING_EVENT_IDENTIFIER FROM sites WHERE MBRContains( GeomFromText(\'", wkt, "\'), pt);"))
-  lists <- as.data.frame(lists)
-  meta <- parse_gs_file(gs_file)
-  if(nrow(lists) == 0)
-   lists
-  else {
-    cat(paste(meta$name, nrow(lists), 'lists \n'))
-    cbind(meta, lists)
-  } 
-}
 samples_from_file <- function (con, gs_file) {
   geojson_data <- geojsonR::FROM_GeoJson(gs_file)
   wkt <- get_wkt_of_greenspace(geojson_data)
