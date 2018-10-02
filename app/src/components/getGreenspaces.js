@@ -10,7 +10,7 @@ const store = localforage.createInstance({
   // Prefix all storage keys to prevent conflicts
   name: 'my-cache'
 })
-
+// store.clear()
 const api = setup({
   cache: {
     maxAge: 30 * 60 * 1000,
@@ -20,9 +20,11 @@ const api = setup({
 export const greenspaces = () =>
   api.get('https://api.github.com/repos/coreytcallaghan/urban_greenspaces/contents/geojson_greenspace_files')
     .then(resp => {
+      // console.log(resp)
       return resp.data
         .filter(raw => raw.name.match(/\.geojson$/))
         .map(raw => {
+          // console.log(raw.name)
           raw.name = raw.name.replace(/\.geojson$/, '')
           var split = raw.name.split('-')
           return {

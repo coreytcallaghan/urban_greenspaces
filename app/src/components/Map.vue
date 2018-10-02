@@ -7,7 +7,8 @@ div
       :zoom="zoom",
       :center="center")
       l-tile-layer(:url="url", :attribution="attribution")
-      l-geo-json(:geojson='g.geojson' :key="i" v-if="g.displayed" :options='geojsonOptions' v-for="(g, i) in greenspaces")
+      l-geo-json(:geojson='g.geojson', :key="i", v-if="g.displayed", :options='geojsonOptions', v-for="(g, i) in greenspaces")
+        popup-content(content="Circle")
     
   section.section.container
     nav.level(v-if='statistics')
@@ -65,14 +66,20 @@ import { LMap, LTileLayer, LGeoJson } from 'vue2-leaflet'
 import axios from 'axios'
 import { _ } from 'vue-underscore'
 import center from '@turf/center'
+import PopupContent from './PopupContent'
 import { greenspaces, getGeoJson } from './getGreenspaces'
 // import  from './'
+function onEachFeature (feature, layer) {
+  let PopupCont = Vue.extend(PopupContent);
+  let popup = new PopupCont({ propsData: { type: feature.geometry.type, text: feature.properties.popupContent } });
+  layer.bindPopup(popup.$mount().$el);
+}
 export default {
-  components: { LMap, LTileLayer, LGeoJson },
+  components: { LMap, LTileLayer, LGeoJson, PopupContent },
   data () {
     return {
       center: [-33.95, 151.2],
-      zoom: 12,
+      zoom: 14,
       url: 'https://api.mapbox.com/v4/mapbox.streets-basic/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoiam9obi13aWxzaGlyZSIsImEiOiJjajIyZ2Y4dG0wMGZmMnhvNHN2aWVwdWo4In0.Znb0T9ndyQHmKZmx9VGMQw',
       attribution: "&copy; <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
       greenspaces: [],
@@ -83,7 +90,8 @@ export default {
         style: {
           color: '#333',
           weight: 2
-        }
+        },
+        onEachFeature
       },
       search: ''
     }
@@ -172,7 +180,8 @@ export default {
         g.index = index
         this.greenspaces.push(g)
       })
-      const numToAdd = 10
+      const numToAdd = 0
+      this.toggleVis(this.greenspaces.findIndex(x => x.id === 'aus-nsw-randwick_environment_park'))
       this.greenspaces.slice(0, numToAdd).forEach((g, i) => {
         this.toggleVis(g.index)
       })
