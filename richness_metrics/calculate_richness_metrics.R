@@ -170,7 +170,6 @@ for (i in greenspaces_to_assess) {
     
     )
 
-  
 }
 
 
