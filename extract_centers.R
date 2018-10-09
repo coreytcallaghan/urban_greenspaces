@@ -13,11 +13,12 @@ geos %>% map_dfr(function(file) {
 # library(leaflet)
 # leaflet(centers) %>% addTiles %>% addMarkers(~lon, ~lat, label = ~file)
 library(dplyr)
+library(stringr)
 centers %>% mutate(
   id = gsub('.*/|.geojson', '', file),
   geojson = file,
   file = NULL,
-  country = strsplit(id, '-')[[1]][1] %>% toupper(),
-  state = strsplit(id, '-')[[1]][2] %>% toupper(),
-  name = strsplit(id, '-')[[1]][3] %>% gsub('_', ' ', .) %>% tools::toTitleCase()
+  country = str_split(id, '-', simplify = T)[,1] %>% toupper(),
+  state = str_split(id, '-', simplify = T)[,2] %>% toupper(),
+  name =  str_split(id, '-', simplify = T)[,3] %>% gsub('_', ' ', .) %>% tools::toTitleCase()
 ) %>% geojsonio::geojson_write(file = 'greenspace_centers.geojson')
