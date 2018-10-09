@@ -4,7 +4,7 @@ my-map
 
 <script>
 // @ is an alias to /src
-import Map from '@/components/Map'
+import Map from './../components/Map'
 
 export default {
   name: 'home',

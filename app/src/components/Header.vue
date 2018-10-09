@@ -7,7 +7,7 @@ section.hero.is-success
           router-link(to='/').navbar-item
             .title
               span.fas.fa-dove
-              |  Urban Greenspaces 
+              |  Greenspace bird calculator
               span.fas.fa-tree 
 
           span.navbar-burger.burger(data-target='navbarMenuHeroC')

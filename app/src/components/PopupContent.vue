@@ -1,18 +1,13 @@
 <template lang="pug">
 div
-  h3.title Randwick Environment Park
+  h3.title {{ name }}
   img.main-popup(src='aus-nsw-randwick_environment_park.png')
 </template>
 
 <script>
 export default {
   name: 'PopupContent',
-  props: {
-    data: {
-      type: Object,
-      default: () => ({ type: '', color: '#ffffff' })
-    }
-  }
+  props: ['name']
 };
 </script>
 <style>

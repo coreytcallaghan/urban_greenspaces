@@ -18,29 +18,19 @@ const api = setup({
   }
 })
 export const greenspaces = () =>
-  api.get('https://api.github.com/repos/coreytcallaghan/urban_greenspaces/contents/geojson_greenspace_files')
-    .then(resp => {
-      // console.log(resp)
-      return resp.data
-        .filter(raw => raw.name.match(/\.geojson$/))
-        .map(raw => {
-          // console.log(raw.name)
-          raw.name = raw.name.replace(/\.geojson$/, '')
-          var split = raw.name.split('-')
-          return {
-            id: raw.name,
-            name: split[2].split('_').map(x => x[0].toLocaleUpperCase() + x.substring(1, x.length)).join(' '),
-            country: split[0].toLocaleUpperCase(),
-            state: split[1].toLocaleUpperCase(),
-            download: raw.download_url
-          }
-        })
-    })
+  api.get('https://raw.githubusercontent.com/coreytcallaghan/urban_greenspaces/master/greenspace_centers.geojson')
+    .then(resp => resp.data)
 
-export const getGeoJson = url =>
-  api.get(url).then(resp => resp.data)
+export const getGeoJson = id =>
+  api.get(`https://raw.githubusercontent.com/coreytcallaghan/urban_greenspaces/master/greenspaces/${id}/${id}.geojson`).then(resp => resp.data)
 
 export const getREADME = () =>
   api.get('https://api.github.com/repos/coreytcallaghan/urban_greenspaces/readme', {
     headers: { Accept: 'application/vnd.github.VERSION.html' }
   })
+
+export const getMethods = () =>
+  api.get('https://raw.githubusercontent.com/coreytcallaghan/urban_greenspaces/master/methods.md')
+
+export const getSpecies = (id) =>
+  api.get(`https://raw.githubusercontent.com/coreytcallaghan/urban_greenspaces/master/greenspaces/${id}/${id}.json`)
