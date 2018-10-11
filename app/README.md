@@ -1,4 +1,4 @@
-# Dev guide for urban greenspaces app
+# Dev guide for Greenspace bird calculator
 
 ## Setup
 
@@ -13,4 +13,4 @@
 
 ## Deploying
 
-2. run `npm run bnd` to build the site, and push it to github pages
+2. run `npm run bnd` to build the site, and push it to Github pages

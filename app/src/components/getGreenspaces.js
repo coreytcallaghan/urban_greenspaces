@@ -34,3 +34,6 @@ export const getMethods = () =>
 
 export const getSpecies = (id) =>
   api.get(`https://raw.githubusercontent.com/coreytcallaghan/urban_greenspaces/master/greenspaces/${id}/${id}.json`)
+
+export const getMetadata = (id) =>
+  api.get(`https://raw.githubusercontent.com/coreytcallaghan/urban_greenspaces/master/greenspaces/${id}/metadata-${id}.json`)

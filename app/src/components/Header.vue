@@ -5,11 +5,11 @@ section.hero.is-success
       .container
         .navbar-brand
           router-link(to='/').navbar-item
-            .title
+            .title.is-3
               span.fas.fa-dove
               |  Greenspace bird calculator
-              span.fas.fa-tree 
-
+              span.fas.fa-tree
+            
           span.navbar-burger.burger(data-target='navbarMenuHeroC')
             span
             span

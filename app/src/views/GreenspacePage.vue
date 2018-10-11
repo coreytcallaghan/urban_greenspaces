@@ -2,7 +2,21 @@
 div.container
   section.hero
     .hero-body
-      .title {{name}}
+      nav.level
+        
+        .title {{name}}
+        .level-item.has-text-centered
+          div
+            p.heading Checklists
+            p.title {{ totalLists }}
+        .level-item.has-text-centered
+          div
+            p.heading Species
+            p.title  {{ speciesAll }}
+        .level-item.has-text-centered
+          div
+            p.heading Species 95
+            p.title  {{ species95 }}
   .columns
     .column.is-third
       .box
@@ -13,19 +27,21 @@ div.container
           ref="map")
           l-tile-layer(:url="url", :attribution="attribution")
           l-geo-json(:geojson='geojson', v-if="geojson !== ''")
-    .column.is-third
+    .column.is-third(v-show='!enoughLists')
       .box
-        img.image.accum(:src='accum', v-if='!error')
-    .column.is-third
+        .title Insufficient data
+    .column.is-third(v-show='enoughLists')
       .box
-        img.image.accum(:src='listsTime', v-if='!error')
+        img.image.accum(:src='accum')
+    .column.is-third(v-show='enoughLists')
+      .box
+        img.image.accum(:src='listsTime')
   .columns
     .column.is-half
       .box.content(v-html="methods")
-    .column.is-half
+    .column.is-half(v-show='enoughLists')
       .box
-        p {{error}}
-        table.table.is-fullwidth(v-if='!error')
+        table.table.is-fullwidth(v-if='enoughLists')
           thead
             tr
               th Rank
@@ -41,7 +57,7 @@ div.container
 <script>
 import Vue from 'vue'
 import { LMap, LTileLayer, LGeoJson, LMarker } from 'vue2-leaflet'
-import { getGeoJson, getSpecies, getMethods } from '../components/getGreenspaces'
+import { getGeoJson, getSpecies, getMethods, getMetadata } from '../components/getGreenspaces'
 import map from './../components/mapOpts'
 import center from '@turf/center'
 import snarkdown from 'snarkdown'
@@ -63,6 +79,10 @@ export default {
       listsTime: '',
       species: [],
       methods: '',
+      totalLists: null,
+      speciesAll: null,
+      species95: null,
+      enoughLists: false,
       error: false
     }
   },
@@ -79,6 +99,13 @@ export default {
     this.state = split[1].toLocaleUpperCase()
     this.accum = `https://raw.githubusercontent.com/coreytcallaghan/urban_greenspaces/master/greenspaces/${this.id}/accum_curves-${this.id}.png`
     this.listsTime = `https://raw.githubusercontent.com/coreytcallaghan/urban_greenspaces/master/greenspaces/${this.id}/lists_time-${this.id}.png`
+    getMetadata(this.id).then(resp => {
+      console.log(resp.data)
+      this.totalLists = resp.data[0].lists_total
+      this.enoughLists = resp.data[0].enough_lists
+      this.species95 = resp.data[0].species_95
+      this.speciesAll = resp.data[0].species_all
+    })
     getSpecies(this.id).then(resp => {
       this.species = resp.data
     }).catch(err => {
