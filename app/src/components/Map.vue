@@ -99,7 +99,16 @@ export default {
       status: '',
       search: '',
       icon (suff) {
-        return L.divIcon({ className: suff ? 'myIcon myIconGreen' : 'myIcon myIconRed' })
+
+        return L.divIcon({
+          className: suff ? 'myIcon myIconGreen' : 'myIcon myIconRed',
+          html: `
+            <span class="icon">
+              <i class="fas fa-${suff ? 'check' : 'times'}"></i>
+            </span>`,
+          iconAnchor: [12, 12],
+          popupAnchor: [0, 0]
+        })
       },
       geosearchOptions: { // Important part Here
         provider: new OpenStreetMapProvider(),
@@ -171,20 +180,17 @@ export default {
   width: 100%;
 }
 .myIcon {
-  border: 5px solid rgba(255, 255, 255, 0.5);
-  color: blue;
   font-weight: bold;
   text-align: center;
   border-radius: 50%;
   line-height: 30px;
 }
 .myIconGreen {
-  border: 20px solid rgba(255, 255, 255, 0.5);
-  background-color: #23d160;
-  opacity: 0.7;
+  color: #23d160;
+  font-size: 30px;
 }
 .myIconRed {
-  opacity: 0.5;
-  background-color: yellow;
+  font-size: 15px;
+  color: red;
 }
 </style>
