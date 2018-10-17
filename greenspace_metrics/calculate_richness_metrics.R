@@ -11,6 +11,7 @@ library(reshape2)
 library(data.table)
 library(lubridate)
 library(tibble)
+library(readr)
 
 
 
@@ -139,7 +140,6 @@ ggplot(results, aes(x=Checklists, y=Richness, color=level))+
   theme(legend.position=c(0.9, 0.2))+
   theme(legend.background=element_blank())+
   theme(legend.box.background=element_rect(color="black"))+
-  ggtitle(paste0("N = ", N, " checklists"))+
   scale_color_manual(values=c("goldenrod3", "steelblue3"))
   
   ggsave(paste0("greenspaces/", greenspace, "/accum_curves-", greenspace, ".png"), width=4, height=3.6, units="in", dpi=400)
