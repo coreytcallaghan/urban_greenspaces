@@ -2,7 +2,7 @@
 
 import argparse
 import os.path
-import MySQLdb
+# import MySQLdb
 import re
 import sys
 from datetime import datetime
@@ -12,7 +12,7 @@ parser.add_argument('-p', '--path', help='the path to the text file on the local
   default='/home/bird_100k_test.txt', type=str)
 parser.add_argument('-s', '--schema_path', help='the path to the schema file, local',
   default='schema.txt', type=str)
-parser.add_argument('-', '--dir', help='the path to write the sql files',
+parser.add_argument('-d', '--dir', help='the path to write the sql files',
   default='init/', type=str)
 args = parser.parse_args()
 def main():
@@ -47,7 +47,7 @@ def main():
   f = open(os.path.join(args.dir, 'init.sql' ), 'w+')
 
   f.write('\n'.join(['source %s' %f for f in files]))
-  f.close()
+
 def get_sql(path, cols, table):
     return """LOAD DATA CONCURRENT INFILE '%s' 
   IGNORE INTO TABLE %s 
@@ -83,8 +83,6 @@ def get_sql(path, cols, table):
     @OBSERVATION_DATE,
     @TIME_OBSERVATIONS_STARTED,
     @OBSERVER_ID,
-    @FIRST_NAME,
-    @LAST_NAME,
     @SAMPLING_EVENT_IDENTIFIER,
     @PROTOCOL_TYPE,
     @PROTOCOL_CODE,
