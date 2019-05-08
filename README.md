@@ -9,7 +9,7 @@ To add a greenspace use a tool like [geojson.io](http://geojson.io/) to extract 
 
 We use the naming convention `<three letter country code>-<state or province>-<name_of_park>.geojson`, for example Hyde Park in New South Wales Australia has the file name `aus-nsw-hyde_park.geojson`. All spaces must be replaced by underscores: `_` and the filename must be in all lowercase. 
 
-Then make a `github.com` account and fork the greenspace repository, add your `.geojson` file to the folder `/geojson_greenspace_files`, commit your changes and then submit a pull request. You can submit mulitple greenspaces at a time.
+There then two options to contribute the delineated greenspace to us. The easiest way is to email the file to callaghan.corey.t@gmail.com and the more technical way is to make a `github.com` account and fork the greenspace repository, add your `.geojson` file to the folder `/geojson_greenspace_files`, commit your changes and then submit a pull request. You can submit mulitple greenspaces at a time.
 
 :leaves: :bird:
 
